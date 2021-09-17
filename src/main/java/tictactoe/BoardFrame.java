@@ -9,6 +9,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+
+import tictactoe.model.History;
+import tictactoe.model.HistoryDAO;
+
+import java.util.Date;
 import java.util.Random;
 
 import java.awt.GridLayout;
@@ -23,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 
 public class BoardFrame extends JFrame {
 
@@ -58,13 +64,23 @@ public class BoardFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public BoardFrame(final int num) {
+		this.num = num;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		int fWidth = 100 * num;
-		int fHeight = 100 * num;
+		int fWidth = 0;
+		int fHeight = 0;
+		if(num > 10) {
+			 fWidth = 50 * num;
+			 fHeight = 50 * num;
+		}else {
+			 fWidth = 100 * num;
+			 fHeight = 100 * num;
+		}
+		setTitle(num +" x "+num);
 		setBounds(100, 100, fWidth, fHeight);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
+		contentPane.setBackground(Color.PINK);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout());
@@ -74,17 +90,17 @@ public class BoardFrame extends JFrame {
 		contentPane.add(panel_Head,BorderLayout.NORTH);
 		
 		
-		Label_X.setFont(new Font("Tahoma", Font.BOLD, 20));
+		Label_X.setFont(new Font("Segoe Print", Font.BOLD, 20));
 		panel_Head.add(Label_X);
 		
 		final JLabel Label_turn = new JLabel("Turn");
 		Label_turn.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		Label_turn.setFont(new Font("Tahoma", Font.BOLD, 20));
+		Label_turn.setFont(new Font("Segoe Print", Font.BOLD, 20));
 		panel_Head.add(Label_turn);
 		
 		
-		Label_O.setFont(new Font("Tahoma", Font.BOLD, 20));
+		Label_O.setFont(new Font("Segoe Print", Font.BOLD, 20));
 		panel_Head.add(Label_O);
 		
 		
@@ -93,6 +109,7 @@ public class BoardFrame extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBounds(5, 5, 424, 22);
 		panel.setLayout(new GridLayout(num,num,5,5));
+		panel.setBackground(Color.gray);
 		
 		 size = num*num;
 		
@@ -102,18 +119,17 @@ public class BoardFrame extends JFrame {
 		
 		for (int i = 0; i < buttons_table.length; i++) {
 			buttons_table[i] = new JButton();
-//			buttons_table[i].setLayout(new BorderLayout());
-			buttons_table[i].setBackground(new Color(255,255,0));
+			buttons_table[i].setBackground(Color.lightGray);
 			buttons_table[i].setFont(new Font("Tahoma", Font.BOLD, 20));
+			buttons_table[i].setBorder(BorderFactory.createLineBorder(Color.black));
 			buttons_table[i].addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
 					for (int j = 0; j < buttons_table.length; j++) {
 						if(e.getSource() == buttons_table[j] && buttons_table[j].getText().isEmpty()) {
 							buttons_table[j].setText("X");
 							
-							Random rand =new Random();
+							Random rand = new Random();
 							int cpuRan = (int)(Math.random()*size);
 							
 							while (true) {
@@ -219,10 +235,6 @@ public class BoardFrame extends JFrame {
 				}
 			});
 			
-				
-				
-
-			
 			Label_turn.setText("Turn X");
 			panel.add(buttons_table[i]);
 		}
@@ -245,18 +257,26 @@ public class BoardFrame extends JFrame {
 	}
 	
 	public void showDialog(String message) {
-		JOptionPane.showMessageDialog(null,message,"Winner",JOptionPane.PLAIN_MESSAGE);	
+		JOptionPane.showMessageDialog(null,"The winner is '"+message+"'","Winner",JOptionPane.PLAIN_MESSAGE);	
 	}
 	
 	public void woncount(String text) {
 		if(text == "X") {
 			woncountX++;
-			Label_X.setText("X"+woncountX);
+			Label_X.setText("X "+woncountX);
 		}else if (text == "O") {
 			woncountO++;
-			Label_O.setText(woncountO+"O");
+			Label_O.setText(woncountO+" O");
 		}
 		
+		History history = new History();
+		history.setSize(size);
+		history.setTable(num+ " x " +num);
+		history.setWinner(text);
+		
+		HistoryDAO dao = new HistoryDAO();
+		int affected = dao.addHistory(history);
+		System.out.println(affected);
 	}
 
 }
