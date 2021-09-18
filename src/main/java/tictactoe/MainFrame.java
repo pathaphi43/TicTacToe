@@ -60,16 +60,16 @@ public class MainFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnNewButton = new JButton("Play 3x3");
+		JButton btnNewButton = new JButton("Play 3x3 Bot");
 		btnNewButton.setFont(new Font("Segoe Print", Font.BOLD, 15));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BoardFrame frame = new BoardFrame(3);
+				BoardFrame frame = new BoardFrame(3,true);
 				frame.setVisible(true);
 				frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			}
 		});
-		btnNewButton.setBounds(157, 11, 120, 46);
+		btnNewButton.setBounds(124, 71, 186, 46);
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Play");
@@ -81,14 +81,14 @@ public class MainFrame extends JFrame {
 				if(size <= 3 || size > 15) {
 					JOptionPane.showMessageDialog(null,"Table must be over 3 - 15","Message",JOptionPane.PLAIN_MESSAGE);	
 				}else {
-					BoardFrame frame = new BoardFrame(size);
+					BoardFrame frame = new BoardFrame(size,true);
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				}
 				
 			}
 		});
-		btnNewButton_1.setBounds(172, 106, 89, 23);
+		btnNewButton_1.setBounds(172, 159, 89, 23);
 		contentPane.add(btnNewButton_1);
 		
 		JButton btnNewButton_2 = new JButton("History");
@@ -101,7 +101,7 @@ public class MainFrame extends JFrame {
 				frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			}
 		});
-		btnNewButton_2.setBounds(172, 154, 89, 23);
+		btnNewButton_2.setBounds(172, 193, 89, 23);
 		contentPane.add(btnNewButton_2);
 		
 		JButton btnNewButton_3 = new JButton("Exit");
@@ -111,13 +111,25 @@ public class MainFrame extends JFrame {
 				System.exit(0);
 			}
 		});
-		btnNewButton_3.setBounds(172, 202, 89, 23);
+		btnNewButton_3.setBounds(172, 227, 89, 23);
 		contentPane.add(btnNewButton_3);
 		
 		textField = new JTextField();
 		textField.setToolTipText("Input Number");
-		textField.setBounds(172, 84, 89, 20);
+		textField.setBounds(172, 128, 89, 20);
 		contentPane.add(textField);
 		textField.setColumns(10);
+		
+		JButton btnNewButton_4 = new JButton("Play 3x3 2 Player");
+		btnNewButton_4.setFont(new Font("Segoe Print", Font.BOLD, 15));
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BoardFrame frame = new BoardFrame(3,false);
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			}
+		});
+		btnNewButton_4.setBounds(124, 11, 186, 49);
+		contentPane.add(btnNewButton_4);
 	}
 }

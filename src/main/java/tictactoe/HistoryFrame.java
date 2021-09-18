@@ -128,7 +128,7 @@ public class HistoryFrame extends JFrame {
 	String[] data=null;
 	private Object[] getDataFromGUITable(JTable table, JPanel panel, int selectedRow) {
 		panel.removeAll();
-		panel.validate();
+		panel.repaint();
 		panel.setBackground(Color.PINK);
         int column = table.getColumnCount() + 1;
         Object[] data = new Object[column];
@@ -139,7 +139,14 @@ public class HistoryFrame extends JFrame {
         String[] getreplay = data[2].toString().split(",");
         Label_Head.setText("Winner: "+data[1].toString());
         int size = Integer.parseInt(getsize[0]) * Integer.parseInt(getsize[0]);
-  
+        if(Integer.parseInt(getsize[0]) > 5) {
+        	setBounds(100, 100, 575,  66 * Integer.parseInt(getsize[0]));
+        	panel_1.setBounds(10, 192, 549, 50 * Integer.parseInt(getsize[0]));
+        }else {
+        	setBounds(100, 100, 575, 411);
+        	panel_1.setBounds(10, 192, 549, 169);
+        }
+        
         data = new String[size];
         JButton[] buttons_table = new JButton[size];
  		panel.setLayout(new GridLayout(Integer.parseInt(getsize[0]),Integer.parseInt(getsize[0]),5,5));

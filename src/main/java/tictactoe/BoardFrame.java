@@ -42,7 +42,7 @@ public class BoardFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BoardFrame frame = new BoardFrame(3);
+					BoardFrame frame = new BoardFrame(3,true);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -59,14 +59,17 @@ public class BoardFrame extends JFrame {
 	boolean flag = true;
 	JLabel Label_X = new JLabel("X -");
 	JLabel Label_O = new JLabel("- O");
+	boolean turn = true;
+	boolean bot = true;
 	public void setNum(int num) {
 		this.num = num;
 	}
 	/**
 	 * Create the frame.
 	 */
-	public BoardFrame(final int num) {
+	public BoardFrame(final int num, boolean bot) {
 		setNum(num);
+		setBot(bot);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		int fWidth = 0;
 		int fHeight = 0;
@@ -126,13 +129,15 @@ public class BoardFrame extends JFrame {
 			buttons_table[i].setBorder(BorderFactory.createLineBorder(Color.black));
 			buttons_table[i].addActionListener(new ActionListener() {
 				
+				
+
 				public void actionPerformed(ActionEvent e) {
 					for (int j = 0; j < buttons_table.length; j++) {
-						if(e.getSource() == buttons_table[j] && buttons_table[j].getText().isEmpty()) {
-							buttons_table[j].setText("X");
-							checkWinner(buttons_table,Label_turn,num);
-							
-//							Random rand = new Random();
+						if(e.getSource() == buttons_table[j] && buttons_table[j].getText().isEmpty()) {		
+							if(isBot()) {	
+								buttons_table[j].setText("X");
+								checkWinner(buttons_table,Label_turn,num);
+								
 							int cpuRan = (int)(Math.random()*size);
 							while (isFlag()) {
 								Label_turn.setText("Turn O");
@@ -154,11 +159,23 @@ public class BoardFrame extends JFrame {
 									}
 									cpuRan = (int)(Math.random()*size);
 							}
+						}else {
+							if(turn) {
+								buttons_table[j].setText("X");
+								checkWinner(buttons_table,Label_turn,num);
+								Label_turn.setText("Turn O");
+								turn = false;
+							}else {
+								buttons_table[j].setText("O");
+								checkWinner(buttons_table,Label_turn,num);
+								Label_turn.setText("Turn X");
+								turn = true;
+							}
 						}
-					}
-					
 						
-					
+							
+						}
+					}	
 				}
 			});
 			
@@ -180,7 +197,7 @@ public class BoardFrame extends JFrame {
 				table[r][k] = buttons_table[index].getText();
 				index++;
 			}
-//			buffer.append("\n");
+
 		}
 		
 		
@@ -204,7 +221,6 @@ public class BoardFrame extends JFrame {
 						setFlag(false);
 						reGame(buttons_table,label);
 						System.out.println(buffer);
-						
 					}
 				}
 				if(table[0][r] != "" && table[0][r] == table[c][r]) {
@@ -309,6 +325,12 @@ public class BoardFrame extends JFrame {
 	}
 	public void setFlag(boolean flag) {
 		this.flag = flag;
+	}
+	public boolean isBot() {
+		return bot;
+	}
+	public void setBot(boolean bot) {
+		this.bot = bot;
 	}
 
 }
