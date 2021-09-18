@@ -1,7 +1,7 @@
 # TicTacToe
 
 # วิธีการ setup, run โปรแกรม
- - สามารถ Download ZIP ไป Run ได้เลย หรือโหลดไฟล์ jar [TicTacToe](https://drive.google.com/file/d/1iHqnT9jJXMb-tI4frBc6ADuM7AdZq3sV/view?usp=sharing) 
+ - สามารถ Download ZIP หรือ Clone  ไป Run ได้เลย หรือโหลดไฟล์ jar [TicTacToe](https://drive.google.com/file/d/1iHqnT9jJXMb-tI4frBc6ADuM7AdZq3sV/view?usp=sharing) 
  - การเล่นจะมี 3x3 กับ Bot หรือเล่น 2 คน
  - การเล่นขนาดอื่น ๆ จะ เล่นได้กับบอทเท่านั้น
  - การชนะ ถ้า X หรือ O เรียงครบ แนวตั้ง แนวนอน หรือ แนวทแยง จะเป็นฝ่ายชนะ
