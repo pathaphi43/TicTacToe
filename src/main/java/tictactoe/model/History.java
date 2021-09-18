@@ -8,17 +8,19 @@ public class History {
 	private String winner;
 	private String table;
 	private String play_date;
+	private String replay;
 	
 	public History() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public History(int hid, int size, String winner, String table, String play_date) {
+	public History(int hid, int size, String winner, String table, String play_date,String replay) {
 		this.hid = hid;
 		this.size = size;
 		this.winner = winner;
 		this.table = table;
 		this.play_date = play_date;
+		this.replay = replay;
 	}
 	
 	public int getHid() {
@@ -50,6 +52,14 @@ public class History {
 	}
 	public void setPlay_date(String string) {
 		this.play_date = string;
+	}
+
+	public String getReplay() {
+		return replay;
+	}
+
+	public void setReplay(String replay) {
+		this.replay = replay;
 	}
 
 }

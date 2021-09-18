@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.Buffer;
 import java.text.SimpleDateFormat;
 
 public class BoardFrame extends JFrame {
@@ -55,6 +56,7 @@ public class BoardFrame extends JFrame {
 	final JButton[] buttons_table = new JButton[num];
 	int woncountX = 0;
 	int woncountO = 0;
+	boolean flag = true;
 	JLabel Label_X = new JLabel("X -");
 	JLabel Label_O = new JLabel("- O");
 	public void setNum(int num) {
@@ -64,7 +66,7 @@ public class BoardFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public BoardFrame(final int num) {
-		this.num = num;
+		setNum(num);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		int fWidth = 0;
 		int fHeight = 0;
@@ -128,15 +130,16 @@ public class BoardFrame extends JFrame {
 					for (int j = 0; j < buttons_table.length; j++) {
 						if(e.getSource() == buttons_table[j] && buttons_table[j].getText().isEmpty()) {
 							buttons_table[j].setText("X");
+							checkWinner(buttons_table,Label_turn,num);
 							
-							Random rand = new Random();
+//							Random rand = new Random();
 							int cpuRan = (int)(Math.random()*size);
-							
-							while (true) {
+							while (isFlag()) {
 								Label_turn.setText("Turn O");
 									if(buttons_table[cpuRan].getText().isEmpty()) {
-										buttons_table[cpuRan].setText("O");
+										buttons_table[cpuRan].setText("O");										
 										Label_turn.setText("Turn X");
+										checkWinner(buttons_table,Label_turn,num);
 										break;
 									}else {
 										int count=0;
@@ -154,83 +157,7 @@ public class BoardFrame extends JFrame {
 						}
 					}
 					
-					int index = 0;
-					String[][]  table = new String[num][num];
-					for (int r = 0; r < num; r++) {	
-						for (int k = 0; k < num; k++) {
-							table[r][k] = buttons_table[index].getText();
-							index++;
-						}
-					}
-
-					
-
-					int cross2 = num-1;
-					int wincheck_cross1 = 0;
-					int wincheck_cross2 = 0;
-					
-					for (int r = 0; r < num; r++) {	
-						int wincheck_row = 0;
-						int wincheck_col = 0;	
-						for (int c = 0; c < num; c++) {
-							if(table[r][0] != "" && table[r][0] == table[r][c]) {
-								wincheck_row++;
-								if(wincheck_row == num) {
-									System.out.println("Winer_Row:"+ table[r][0]);
-									woncount(table[r][0]);
-									showDialog(table[r][0]);
-//									buttonEnable(buttons_table);
-									reGame(buttons_table,Label_turn);
-									
-								}
-							}
-							if(table[0][r] != "" && table[0][r] == table[c][r]) {
-								wincheck_col++;
-								if(wincheck_col == num) {
-									System.out.println("Winer_Col:"+ table[0][r]);
-									woncount(table[0][r]);
-//									buttonEnable(buttons_table);
-									showDialog(table[0][r]);
-									reGame(buttons_table,Label_turn);
-									
-								}
-							}				
-						}
-						if(table[0][0] != "" && table[0][0] == table[r][r]) {
-							wincheck_cross1++;
-							if(wincheck_cross1 == num) {
-								System.out.println("Winer_Cross1:"+ table[0][0]);
-								woncount(table[0][0]);
-//								buttonEnable(buttons_table);
-								showDialog(table[0][0]);
-								reGame(buttons_table,Label_turn);
-								
-							}
-						}
-						if(table[0][num-1] != "" && table[0][num-1] == table[r][cross2]) {
-							wincheck_cross2++;
-							if(wincheck_cross2 == num) {
-								System.out.println("Winer_Cross2:"+ table[0][num-1]);
-								woncount(table[0][num-1]);
-//								buttonEnable(buttons_table);
-								showDialog(table[0][num-1]);
-								reGame(buttons_table,Label_turn);
-								
-							}
-						}
-						cross2--;
-						System.out.println();
-					}
-					int count=0;
-					for (int k = 0; k < buttons_table.length; k++) {
-						if(buttons_table[k].getText().isEmpty()) {
-							count++;
-						}
-					}
-					if(count == 0) {											
-						JOptionPane.showMessageDialog(null,"Draw","Winner",JOptionPane.PLAIN_MESSAGE);
-						reGame(buttons_table,Label_turn);
-					}	
+						
 					
 				}
 			});
@@ -243,6 +170,101 @@ public class BoardFrame extends JFrame {
 		
 	}
 	
+	public void checkWinner(JButton[] buttons_table,JLabel label,int countwin) {
+		StringBuffer buffer =new StringBuffer();
+		int index = 0;
+		String[][]  table = new String[num][num];
+		for (int r = 0; r < num; r++) {	
+			for (int k = 0; k < num; k++) {
+				buffer.append(buttons_table[index].getText().isEmpty()? " ":buttons_table[index].getText()).append(",");
+				table[r][k] = buttons_table[index].getText();
+				index++;
+			}
+//			buffer.append("\n");
+		}
+		
+		
+		int cross2 = num-1;
+		int wincheck_cross1 = 0;
+		int wincheck_cross2 = 0;
+		int wincheck_row = 0;
+		int wincheck_col = 0;
+		String winner="";
+		for (int r = 0; r < num; r++) {	
+			 wincheck_row = 0;
+			 wincheck_col = 0;	
+			for (int c = 0; c < num; c++) {
+				if(table[r][0] != "" && table[r][0] == table[r][c]) {
+					wincheck_row++;
+					winner = table[r][0];
+					if(wincheck_row == num) {
+						System.out.println("Winer_Row:"+ winner);
+						woncount(winner,buffer);
+						showDialog(winner);
+						setFlag(false);
+						reGame(buttons_table,label);
+						System.out.println(buffer);
+						
+					}
+				}
+				if(table[0][r] != "" && table[0][r] == table[c][r]) {
+					wincheck_col++;
+					winner = table[0][r];
+					if(wincheck_col == num) {
+						System.out.println("Winer_Col:"+ winner);
+						woncount(winner,buffer);
+						setFlag(false);
+						showDialog(winner);
+						reGame(buttons_table,label);
+						System.out.println(buffer);
+						 
+					}
+				}
+				
+			}
+			
+			
+			if(table[0][0] != "" && table[0][0] == table[r][r]) {
+				wincheck_cross1++;
+				if(wincheck_cross1 == num) {
+					System.out.println("Winer_Cross1:"+ table[0][0]);
+					woncount(table[0][0],buffer);
+					setFlag(false);
+					showDialog(table[0][0]);
+					reGame(buttons_table,label);
+					System.out.println(buffer);
+				}
+			}
+			if(table[0][num-1] != "" && table[0][num-1] == table[r][cross2]) {
+				wincheck_cross2++;
+				if(wincheck_cross2 == num) {
+					System.out.println("Winer_Cross2:"+ table[0][num-1]);
+					woncount(table[0][num-1],buffer);
+					setFlag(false);
+					showDialog(table[0][num-1]);
+					reGame(buttons_table,label);
+					System.out.println(buffer);
+				}
+			}
+			cross2--;
+			System.out.println();
+		}
+		
+		
+		int count=0;
+		for (int k = 0; k < buttons_table.length; k++) {
+			if(buttons_table[k].getText().isEmpty()) {
+				count++;
+			}
+		}
+		if(count == 0) {											
+			JOptionPane.showMessageDialog(null,"Draw","Winner",JOptionPane.PLAIN_MESSAGE);
+			woncount("Draw",buffer);
+			reGame(buttons_table,label);
+		}
+	}
+	
+	
 	public void buttonEnable(JButton[] buttons) {
 		for (int i = 0; i < buttons.length; i++) {
 			buttons[i].setEnabled(false);
@@ -253,14 +275,16 @@ public class BoardFrame extends JFrame {
 		for (int i = 0; i < buttons.length; i++) {
 			buttons[i].setText("");
 		}
-		label.setText("Turn\tX");
+		label.setText("Turn X");
+		setFlag(true);
 	}
 	
 	public void showDialog(String message) {
 		JOptionPane.showMessageDialog(null,"The winner is '"+message+"'","Winner",JOptionPane.PLAIN_MESSAGE);	
 	}
 	
-	public void woncount(String text) {
+	public void woncount(String text,StringBuffer buffer) {
+		
 		if(text == "X") {
 			woncountX++;
 			Label_X.setText("X "+woncountX);
@@ -270,13 +294,21 @@ public class BoardFrame extends JFrame {
 		}
 		
 		History history = new History();
-		history.setSize(size);
+		history.setSize(num);
 		history.setTable(num+ " x " +num);
 		history.setWinner(text);
+		history.setReplay(buffer.toString());
 		
 		HistoryDAO dao = new HistoryDAO();
 		int affected = dao.addHistory(history);
 		System.out.println(affected);
+		
+	}
+	public boolean isFlag() {
+		return flag;
+	}
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 }

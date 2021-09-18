@@ -23,7 +23,7 @@ public class HistoryDAO {
 	public List<History> getHistory() {
 			List<History> historys = new ArrayList<History>();
 			try {
-				String sql = "select `table`,`winner`,`size`  from history";
+				String sql = "select `table`,`winner`,`size`, `replay`  from history";
 				PreparedStatement ps = this.connect.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
@@ -31,6 +31,7 @@ public class HistoryDAO {
 					history.setTable(rs.getString("table"));
 					history.setWinner(rs.getString("winner"));;
 					history.setSize(rs.getInt("size"));
+					history.setReplay(rs.getString("replay"));
 					historys.add(history);
 				}
 			} catch (SQLException e) {
@@ -43,11 +44,12 @@ public class HistoryDAO {
 	public int addHistory(History history) {
 		int affected = 0;
 		try {
-			String sql = "insert into history (`size`, winner, `table`) values (?, ?, ?)";
+			String sql = "insert into history (`size`, winner, `table`, `replay`) values (?, ?, ?, ?)";
 			PreparedStatement ps = this.connect.prepareStatement(sql);
 			ps.setInt(1, history.getSize());
 			ps.setString(2, history.getWinner());
 			ps.setString(3, history.getTable());
+			ps.setString(4, history.getReplay());
 			
 			
 			affected = ps.executeUpdate();
